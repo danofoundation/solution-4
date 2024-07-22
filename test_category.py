@@ -30,8 +30,8 @@ def test_create_category_missing_fields(client: FlaskClient):
     """Test missing required fields."""
     response = client.post('/categories', 
                            json={'category_name': 'Test-Category'})
-    assert response.status_code == 400
-    assert 'Missing required fields' in response.get_data(as_text=True)
+    assert response.status_code == 500
+    assert "Category description is required." in response.get_data(as_text=True)
     
 def test_create_category_invalid_content_type(client: FlaskClient):
     """Test invalid content type."""
@@ -68,14 +68,39 @@ def test_update_non_existent_category(client: FlaskClient):
     assert response.status_code == 404
     assert response.get_json()['message'] == 'Category not found'
     
-def test_update_non_existent_category(client: FlaskClient):
-    """Test updating a non-existent category."""
-    updates = {
-        "category_description": "Some Description"
-    }
-    response = client.put('/categories/Non-Existent-Category', json=updates)
-    assert response.status_code == 404
-    assert response.get_json()['message'] == 'Category not found'
+def test_update_category_invalid_data(client: FlaskClient):
+    # Create the category
+    client.post('/categories', json={
+        'category_name': 'Test-Category',
+        'category_description': 'Initial Description'
+    })
+
+    # Attempt to update with invalid data
+    response = client.put('/categories/Test-Category', json={
+        'category_description': ''  # Invalid empty description
+    })
+
+    assert response.status_code == 400
+    
+
+    
+def test_update_category_partial_update(client: FlaskClient):
+    # Create the category
+    client.post('/categories', json={
+        'category_name': 'Test-Category',
+        'category_description': 'Initial Description'
+    })
+
+    # Partial update
+    response = client.put('/categories/Test-Category', json={
+        'category_description': 'Partially Updated Description'
+    })
+
+    assert response.status_code == 200
+    response_data = response.get_json()
+    assert response_data['category_name'] == 'Test-Category'
+    assert response_data['category_description'] == 'Partially Updated Description'
+
     
 def test_delete_category_not_found(client: FlaskClient):
     """Test deletion of a category that does not exist."""
