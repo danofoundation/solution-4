@@ -107,12 +107,12 @@ def test_delete_visit_success(client: FlaskClient):
 def test_delete_visit(client: FlaskClient):
     # Mock the delete_visit function to return True for the test
     with patch('application.services.VisitService.delete_visit', return_value=True):
-        response = client.delete('/200/visits/200')
+        response = client.delete('/1/visits/1')
     
     assert response.status_code == 200
     assert response.json == {"status": "success"}
 
-def test_get_nonexistent_visit_id_user_id(client: FlaskClient):0
+def test_get_nonexistent_visit_id_user_id(client: FlaskClient):
     """Test case to verify that a nonexistent visit returns a 404 error."""
     response = client.get(f'/200/visits/300')
     assert response.status_code == 404
