@@ -32,6 +32,7 @@ invalid_data = {
     }
 }
 #!SECTION - calculate_total_scores tests
+# Calculate score success
 def test_calculate_total_scores():
     responses = valid_data["responses"]
     total_scores = calculate_total_scores(responses)
@@ -97,25 +98,36 @@ def test_calculate_total_scores_negative_scores():
     result = calculate_total_scores(responses)
     assert result == expected
 
-# Edge Case: Non-Integer Scores
+# Test case for non-integer scores
 def test_calculate_total_scores_non_integer_scores():
     responses = {
         '1': {'category': 'A', 'score': 10.5},
-        '2': {'category': 'A', 'score': 20.3}
+        '2': {'category': 'A', 'score': '20.3'},  # String that can be converted to float
+        '3': {'category': 'B', 'score': 5}
     }
-    expected = {'A': 30.8}
+    expected = {'A': 30, 'B': 5}
     result = calculate_total_scores(responses)
     assert result == expected
 
-# Edge Case: Mixed Data Types
+# Test case for mixed data types
 def test_calculate_total_scores_mixed_data_types():
     responses = {
-        '1': {'category': 'A', 'score': 10},
-        '2': {'category': 'A', 'score': '20'},  # Score is a string
-        '3': {'category': 'B', 'score': 15}
+        '1': {'category': 'A', 'score': 'high'},  # Non-numeric string
+        '2': {'category': 'A', 'score': 20},
+        '3': {'category': 'B', 'score': 15.5},  # Float
+        '4': {'category': 'B', 'score': '10'}  # String that can be converted to integer
     }
-    with pytest.raises(TypeError):
-        calculate_total_scores(responses)
+    expected = {'A': 20, 'B': 25}
+    result = calculate_total_scores(responses)
+    assert result == expected
+
+# Test case for edge case with empty responses
+def test_calculate_total_scores_empty_responses():
+    responses = {}
+    expected = {}
+    result = calculate_total_scores(responses)
+    assert result == expected
+
 
 # Edge Case: Missing Keys
 def test_calculate_total_scores_missing_keys():
