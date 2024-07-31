@@ -43,3 +43,48 @@ def test_empty_and_non_time_strings():
     assert validate_time_format("123456") == False, "Incorrect Format Test Case 3 Failed"  # Incorrect format
     assert validate_time_format("12:30:45:67") == False, "Too Many Digits Test Case 4 Failed"  # Extra digits
     print("All empty and non-time string test cases passed!")
+
+
+
+ #Valid Time Format (24-hour)
+
+def test_validate_time_format_valid_24_hour():
+    assert validate_time_format("23:59:59") == True
+
+
+# Valid Time Format (Midnight)
+def test_validate_time_format_valid_midnight():
+    assert validate_time_format("00:00:00") == True
+
+#Valid Time Format (Early Morning)
+def test_validate_time_format_valid_early_morning():
+    assert validate_time_format("01:15:30") == True
+
+
+# Invalid Time Format (Hours Out of Range)
+def test_validate_time_format_invalid_hours():
+    assert validate_time_format("25:00:00") == False
+
+# Invalid Time Format (Minutes Out of Range)
+def test_validate_time_format_invalid_minutes():
+    assert validate_time_format("23:60:00") == False
+
+# Invalid Time Format (Seconds Out of Range)
+def test_validate_time_format_invalid_seconds():
+    assert validate_time_format("23:59:60") == False
+
+# Invalid Time Format (Missing Colons)
+def test_validate_time_format_missing_colons():
+    assert validate_time_format("235959") == False
+
+# Invalid Time Format (Incorrect Format)
+def test_validate_time_format_incorrect_format():
+    assert validate_time_format("23:59") == False
+
+# Invalid Time Format (Non-Time String)
+def test_validate_time_format_non_time_string():
+    assert validate_time_format("Hello World") == False
+
+# Invalid Time Format (Empty String)
+def test_validate_time_format_empty_string():
+    assert validate_time_format("") == False
